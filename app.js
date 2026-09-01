@@ -25,14 +25,16 @@
         drone: false,
         binaural: false,
         rain: false,
-        noise: false
+        noise: false,
+        balochi: false
       },
       nodes: {},
       volumes: {
         drone: 0.4,
         binaural: 0.35,
         rain: 0.5,
-        noise: 0.3
+        noise: 0.3,
+        balochi: 0.55
       }
     },
     liveSimulation: false,
@@ -903,7 +905,7 @@
 
   function initAudioEngine() {
     // Sound Toggles
-    const soundTypes = ['drone', 'binaural', 'rain', 'noise'];
+    const soundTypes = ['balochi', 'drone', 'binaural', 'rain', 'noise'];
     soundTypes.forEach(type => {
       const btn = document.getElementById(`btn-sound-${type}`);
       const volSlider = document.getElementById(`vol-${type}`);
@@ -954,7 +956,115 @@
     masterGain.gain.setValueAtTime(state.audio.volumes[type], now);
     masterGain.connect(state.audio.analyser);
 
-    if (type === 'drone') {
+    
+    if (type === 'balochi') {
+      // =========================================================================
+      // BALOCHI SUROZ & DAMBURAG FOLK SYNTHESIZER
+      // Simulates traditional Balochi Suroz bowed harmonics + Damburag rhythmic drone
+      // =========================================================================
+      
+      // 1. Damburag (Two-stringed long-neck lute) Drone: Root D3 (146.83Hz) + Fifth A3 (220Hz)
+      const damburagGain = ctx.createGain();
+      damburagGain.gain.setValueAtTime(0.65, now);
+      damburagGain.connect(masterGain);
+
+      const droneRoot = ctx.createOscillator();
+      droneRoot.type = 'triangle';
+      droneRoot.frequency.setValueAtTime(146.83, now); // D3
+
+      const droneFifth = ctx.createOscillator();
+      droneFifth.type = 'sawtooth';
+      droneFifth.frequency.setValueAtTime(220.00, now); // A3
+
+      const droneFilter = ctx.createBiquadFilter();
+      droneFilter.type = 'lowpass';
+      droneFilter.frequency.setValueAtTime(480, now);
+      droneFilter.Q.setValueAtTime(2.5, now);
+
+      droneRoot.connect(droneFilter);
+      droneFifth.connect(droneFilter);
+      droneFilter.connect(damburagGain);
+      droneRoot.start(now);
+      droneFifth.start(now);
+
+      // 2. Suroz (سروز - Bowed folk fiddle with sympathetic resonator strings)
+      // Generates warm expressive modal melody in D Bayati / Rast folk scale
+      const surozGain = ctx.createGain();
+      surozGain.gain.setValueAtTime(0.7, now);
+      surozGain.connect(masterGain);
+
+      const surozOsc = ctx.createOscillator();
+      surozOsc.type = 'sawtooth';
+
+      // Sympathetic resonance oscillator (octave + fifth overtone)
+      const sympatheticOsc = ctx.createOscillator();
+      sympatheticOsc.type = 'sine';
+
+      // Suroz acoustic vibrato LFO (5.2 Hz gentle expressive vibrato)
+      const vibratoLfo = ctx.createOscillator();
+      const vibratoGain = ctx.createGain();
+      vibratoLfo.frequency.setValueAtTime(5.2, now);
+      vibratoGain.gain.setValueAtTime(3.5, now); // subtle pitch depth
+      vibratoLfo.connect(vibratoGain);
+      vibratoGain.connect(surozOsc.frequency);
+      vibratoGain.connect(sympatheticOsc.frequency);
+      vibratoLfo.start(now);
+
+      // Resonant Bow filter (Acoustic body wood resonance)
+      const bodyFilter = ctx.createBiquadFilter();
+      bodyFilter.type = 'bandpass';
+      bodyFilter.frequency.setValueAtTime(650, now);
+      bodyFilter.Q.setValueAtTime(1.8, now);
+
+      surozOsc.connect(bodyFilter);
+      sympatheticOsc.connect(bodyFilter);
+      bodyFilter.connect(surozGain);
+
+      // Balochi Modal Melody Scale (D Bayati / Zahirok folk mode: D4, E4-half-flat, F4, G4, A4, Bb4, C5, D5)
+      const balochiScale = [293.66, 320.00, 349.23, 392.00, 440.00, 466.16, 523.25, 587.33];
+      surozOsc.frequency.setValueAtTime(balochiScale[0], now);
+      sympatheticOsc.frequency.setValueAtTime(balochiScale[0] * 2, now);
+      surozOsc.start(now);
+      sympatheticOsc.start(now);
+
+      // 3. Generative Melodic Glissando & Damburag Strum Timer
+      let noteIdx = 0;
+      const melodySequence = [0, 2, 3, 4, 3, 2, 1, 0, 4, 5, 4, 3, 2, 0, 1, 0];
+      
+      const balochiInterval = setInterval(() => {
+        if (!state.audio.isPlaying.balochi) {
+          clearInterval(balochiInterval);
+          return;
+        }
+        const t = ctx.currentTime;
+        noteIdx = (noteIdx + 1) % melodySequence.length;
+        const targetFreq = balochiScale[melodySequence[noteIdx]];
+
+        // Glissando / Portamento between Balochi modal notes (authentic bowed slide)
+        surozOsc.frequency.cancelScheduledValues(t);
+        sympatheticOsc.frequency.cancelScheduledValues(t);
+        surozOsc.frequency.setTargetAtTime(targetFreq, t, 0.18);
+        sympatheticOsc.frequency.setTargetAtTime(targetFreq * 2, t, 0.18);
+
+        // Body filter sweep for dynamic bowing expression
+        bodyFilter.frequency.setTargetAtTime(450 + (targetFreq * 0.7), t, 0.15);
+
+        // Damburag rhythmic pluck pulse simulation
+        damburagGain.gain.setValueAtTime(0.75, t);
+        damburagGain.gain.exponentialRampToValueAtTime(0.4, t + 0.35);
+      }, 1400);
+
+      state.audio.nodes.balochi = {
+        droneRoot,
+        droneFifth,
+        surozOsc,
+        sympatheticOsc,
+        vibratoLfo,
+        balochiInterval,
+        gain: masterGain
+      };
+    } else if (type === 'drone') {
+
       // Cosmic Drone: Tri-oscillator chord (110Hz, 165Hz, 220Hz) with low-pass sweep
       const freqs = [110, 164.81, 220];
       const oscs = freqs.map(f => {
@@ -1035,6 +1145,8 @@
     if (!state.audio.isPlaying[type]) return;
     const node = state.audio.nodes[type];
     if (node) {
+      if (node.balochiInterval) clearInterval(node.balochiInterval);
+      if (node.droneRoot) { try { node.droneRoot.stop(); node.droneFifth.stop(); node.surozOsc.stop(); node.sympatheticOsc.stop(); node.vibratoLfo.stop(); } catch(e){} }
       if (node.oscs) node.oscs.forEach(o => { try { o.stop(); } catch(e){} });
       if (node.oscL) { try { node.oscL.stop(); node.oscR.stop(); } catch(e){} }
       if (node.noiseSource) { try { node.noiseSource.stop(); } catch(e){} }
@@ -1353,6 +1465,7 @@ studio.boot();
     { title: 'Create New Task', category: 'Action', icon: '➕', action: () => openTaskModal() },
     { title: 'Start 25m Focus Timer', category: 'Focus', icon: '▶️', action: () => { switchView('focus'); startTimer(); } },
     { title: 'Reset Focus Timer', category: 'Focus', icon: '🔄', action: () => { switchView('focus'); pauseTimer(); } },
+    { title: 'Play Balochi Suroz & Folk Drone (سروز)', category: 'Audio', icon: '🪕', action: () => { playSound('balochi'); showToast('Playing Balochi Suroz & Damburag Ambient'); } },
     { title: 'Play Cosmic Ambient Drone', category: 'Audio', icon: '🌌', action: () => { playSound('drone'); showToast('Playing Cosmic Drone'); } },
     { title: 'Play Binaural 432Hz Beats', category: 'Audio', icon: '🧠', action: () => { playSound('binaural'); showToast('Playing Binaural Beats'); } },
     { title: 'Play Gentle Rain Generator', category: 'Audio', icon: '🌧️', action: () => { playSound('rain'); showToast('Playing Rain Generator'); } },
