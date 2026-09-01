@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumina Studio — Next-Gen Creative & Productivity Hub</title>
+  <meta name="description" content="A modern, high-performance workspace featuring real-time analytics, kanban task management, ambient sound generator, and markdown notes.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%236366f1'/><path d='M30 50 L45 65 L70 35' stroke='white' stroke-width='10' fill='none'/></svg>">
+</head>
+<body>
+
+  <!-- Dynamic Particle Canvas Background -->
+  <canvas id="bg-canvas"></canvas>
+
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="brand">
+        <div class="brand-icon">✧</div>
+        <div>
+          <div class="brand-title">Lumina</div>
+        </div>
+        <span class="brand-badge">PRO v2.5</span>
+      </div>
+
+      <nav>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <button class="nav-btn active" data-view="dashboard" id="nav-dashboard">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+              <span>Dashboard</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-btn" data-view="kanban" id="nav-kanban">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
+              <span>Task Board</span>
+              <span class="nav-count" id="sidebar-task-count">12</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-btn" data-view="focus" id="nav-focus">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>
+              <span>Focus Hub & Audio</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-btn" data-view="notes" id="nav-notes">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <span>AI Notes</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="system-status">
+          <span class="status-dot"></span>
+          <div>
+            <div style="font-weight:600; font-size:12px;">Engine Active</div>
+            <div style="font-size:10px; color:var(--text-muted);">Real-time Sync • 60 FPS</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <main class="app-main">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="header-left">
+          <div class="header-title">
+            <h1 id="page-heading">Command Center</h1>
+            <p id="page-subheading">Live telemetry, focus analytics & active workflow</p>
+          </div>
+          <button class="cmd-search-btn" id="cmd-palette-btn" title="Open Command Palette (Ctrl+K)">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <span>Quick Command...</span>
+            <span class="kbd-badge">Ctrl K</span>
+          </button>
+        </div>
+
+        <div class="header-right">
+          <div class="live-badge" id="live-indicator">
+            <span class="status-dot"></span>
+            <span>Live Feed</span>
+          </div>
+
+          <!-- Theme Switcher -->
+          <div class="theme-picker" title="Switch Theme">
+            <button class="theme-btn active" data-theme-val="dark" title="Dark Obsidian">🌙</button>
+            <button class="theme-btn" data-theme-val="nebula" title="Nebula Purple">🔮</button>
+            <button class="theme-btn" data-theme-val="emerald" title="Cyber Emerald">🌿</button>
+            <button class="theme-btn" data-theme-val="light" title="Crisp Light">☀️</button>
+          </div>
+
+          <button class="btn-primary" id="header-create-task-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>New Task</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- Views Container -->
+      <div class="view-container">
+
+        <!-- ==================== VIEW 1: DASHBOARD ==================== -->
+        <section id="view-dashboard" class="view-section active">
+          <!-- Metric KPI Grid -->
+          <div class="dashboard-grid">
+            <div class="glass-card metric-card">
+              <div class="metric-top">
+                <div class="metric-icon" style="background: rgba(99, 102, 241, 0.2); color: var(--accent-primary);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <span class="metric-trend trend-up">↑ +18.4%</span>
+              </div>
+              <div>
+                <div class="metric-value" id="kpi-output">$42,850</div>
+                <div class="metric-label">Workspace Output Value</div>
+              </div>
+            </div>
+
+            <div class="glass-card metric-card">
+              <div class="metric-top">
+                <div class="metric-icon" style="background: rgba(6, 182, 212, 0.2); color: var(--accent-secondary);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <span class="metric-trend trend-up">↑ +24.1%</span>
+              </div>
+              <div>
+                <div class="metric-value" id="kpi-velocity">98.6%</div>
+                <div class="metric-label">Sprint Velocity Index</div>
+              </div>
+            </div>
+
+            <div class="glass-card metric-card">
+              <div class="metric-top">
+                <div class="metric-icon" style="background: rgba(236, 72, 153, 0.2); color: var(--accent-tertiary);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <span class="metric-trend trend-up">↑ 3.8 hrs</span>
+              </div>
+              <div>
+                <div class="metric-value" id="kpi-focus">38.4h</div>
+                <div class="metric-label">Total Deep Focus Hours</div>
+              </div>
+            </div>
+
+            <div class="glass-card metric-card">
+              <div class="metric-top">
+                <div class="metric-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-success);">
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <span class="metric-trend trend-up">↑ +12</span>
+              </div>
+              <div>
+                <div class="metric-value" id="kpi-tasks-done">47 / 52</div>
+                <div class="metric-label">Completed Milestones</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Section -->
+          <div class="charts-grid">
+            <div class="glass-card chart-card">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+                  <span>Activity & Velocity Telemetry</span>
+                </div>
+                <div class="chart-filters">
+                  <button class="filter-chip active" data-range="7d">7 Days</button>
+                  <button class="filter-chip" data-range="30d">30 Days</button>
+                  <button class="filter-chip" data-range="90d">Quarter</button>
+                  <button class="filter-chip" id="toggle-sim-btn" title="Simulate dynamic real-time data">⚡ Live Pulse</button>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="area-chart-canvas"></canvas>
+              </div>
+            </div>
+
+            <div class="glass-card chart-card">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10h-10z"/></svg>
+                  <span>Work Breakdown</span>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="donut-chart-canvas"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- Activity & Quick Actions -->
+          <div class="activity-grid">
+            <div class="glass-card">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  <span>Recent System Events</span>
+                </div>
+                <span style="font-size:12px; color:var(--text-muted);" id="activity-timestamp">Updated just now</span>
+              </div>
+              <div class="activity-list" id="activity-feed">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <div class="glass-card">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  <span>Quick Workflows</span>
+                </div>
+              </div>
+              <div class="quick-action-btns">
+                <button class="action-tile" data-action="goto-kanban">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
+                  <span>Manage Tasks</span>
+                </button>
+                <button class="action-tile" data-action="start-focus">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>Start 25m Timer</span>
+                </button>
+                <button class="action-tile" data-action="new-note">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  <span>Write Note</span>
+                </button>
+                <button class="action-tile" data-action="play-ambient">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                  <span>Cosmic Audio</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 2: KANBAN TASK BOARD ==================== -->
+        <section id="view-kanban" class="view-section">
+          <div class="kanban-controls">
+            <div class="kanban-search">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" id="kanban-filter-input" placeholder="Search tasks, tags, or assignees...">
+            </div>
+
+            <div style="display:flex; gap:8px;">
+              <button class="filter-chip active" data-tag-filter="all">All Tags</button>
+              <button class="filter-chip" data-tag-filter="ai">AI</button>
+              <button class="filter-chip" data-tag-filter="design">Design</button>
+              <button class="filter-chip" data-tag-filter="dev">Dev</button>
+              <button class="filter-chip" data-tag-filter="ops">Ops</button>
+            </div>
+
+            <button class="btn-primary" id="open-new-task-modal-btn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Add Card</span>
+            </button>
+          </div>
+
+          <div class="kanban-board">
+            <!-- Backlog -->
+            <div class="kanban-col" data-status="backlog" id="col-backlog">
+              <div class="col-header">
+                <div class="col-title">
+                  <span class="col-dot" style="background:#94a3b8;"></span>
+                  <span>Backlog</span>
+                </div>
+                <span class="col-count" id="count-backlog">0</span>
+              </div>
+              <div class="kanban-cards-container" id="cards-backlog"></div>
+            </div>
+
+            <!-- In Progress -->
+            <div class="kanban-col" data-status="in-progress" id="col-in-progress">
+              <div class="col-header">
+                <div class="col-title">
+                  <span class="col-dot" style="background:var(--accent-primary);"></span>
+                  <span>In Progress</span>
+                </div>
+                <span class="col-count" id="count-in-progress">0</span>
+              </div>
+              <div class="kanban-cards-container" id="cards-in-progress"></div>
+            </div>
+
+            <!-- In Review -->
+            <div class="kanban-col" data-status="review" id="col-review">
+              <div class="col-header">
+                <div class="col-title">
+                  <span class="col-dot" style="background:var(--accent-warning);"></span>
+                  <span>Review</span>
+                </div>
+                <span class="col-count" id="count-review">0</span>
+              </div>
+              <div class="kanban-cards-container" id="cards-review"></div>
+            </div>
+
+            <!-- Completed -->
+            <div class="kanban-col" data-status="done" id="col-done">
+              <div class="col-header">
+                <div class="col-title">
+                  <span class="col-dot" style="background:var(--accent-success);"></span>
+                  <span>Completed</span>
+                </div>
+                <span class="col-count" id="count-done">0</span>
+              </div>
+              <div class="kanban-cards-container" id="cards-done"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 3: FOCUS & AMBIENT HUB ==================== -->
+        <section id="view-focus" class="view-section">
+          <div class="focus-grid">
+            <!-- Pomodoro Timer Card -->
+            <div class="glass-card focus-card-main">
+              <div class="timer-presets">
+                <button class="preset-btn active" data-time="1500" data-label="Focus Time">Focus (25m)</button>
+                <button class="preset-btn" data-time="300" data-label="Short Rest">Short Break (5m)</button>
+                <button class="preset-btn" data-time="900" data-label="Deep Rest">Long Break (15m)</button>
+              </div>
+
+              <div class="timer-circle-container">
+                <svg class="timer-svg" viewBox="0 0 240 240">
+                  <circle class="timer-bg-circle" cx="120" cy="120" r="110"></circle>
+                  <circle class="timer-progress-circle" id="timer-progress-ring" cx="120" cy="120" r="110"></circle>
+                </svg>
+                <div class="timer-inner-content">
+                  <div class="timer-digits" id="timer-display">25:00</div>
+                  <div class="timer-mode-label" id="timer-status-text">Ready to Focus</div>
+                </div>
+              </div>
+
+              <div class="timer-controls">
+                <button class="btn-primary" id="timer-start-pause-btn" style="min-width: 120px; font-size:14px; padding: 10px 24px;">
+                  <svg id="timer-btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <span id="timer-btn-label">Start Focus</span>
+                </button>
+                <button class="btn-secondary" id="timer-reset-btn" title="Reset Timer">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+                  <span>Reset</span>
+                </button>
+              </div>
+
+              <p style="font-size:12px; color:var(--text-muted); max-width:320px;">
+                Audio chimes and ambient visualizer automatically sync with your focus state.
+              </p>
+            </div>
+
+            <!-- Ambient Sound Synthesizer Card -->
+            <div class="glass-card">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+                  <span>Web Audio Ambient Synthesizer</span>
+                </div>
+                <button class="btn-secondary" id="stop-all-audio-btn" style="padding:4px 10px; font-size:11px;">Mute All</button>
+              </div>
+
+              <div class="soundscape-controls">
+                <!-- Cosmic Drone -->
+                <div class="sound-row">
+                  <div class="sound-info">
+                    <div class="sound-icon">🌌</div>
+                    <div class="sound-name">Cosmic Drone</div>
+                  </div>
+                  <div class="sound-slider-wrap">
+                    <input type="range" class="custom-range" id="vol-drone" min="0" max="100" value="40">
+                  </div>
+                  <button class="sound-toggle-btn" data-sound="drone" id="btn-sound-drone">Play</button>
+                </div>
+
+                <!-- Binaural Focus 432Hz -->
+                <div class="sound-row">
+                  <div class="sound-info">
+                    <div class="sound-icon">🧠</div>
+                    <div class="sound-name">Binaural 432Hz</div>
+                  </div>
+                  <div class="sound-slider-wrap">
+                    <input type="range" class="custom-range" id="vol-binaural" min="0" max="100" value="35">
+                  </div>
+                  <button class="sound-toggle-btn" data-sound="binaural" id="btn-sound-binaural">Play</button>
+                </div>
+
+                <!-- Rain / Water -->
+                <div class="sound-row">
+                  <div class="sound-info">
+                    <div class="sound-icon">🌧️</div>
+                    <div class="sound-name">Gentle Rain</div>
+                  </div>
+                  <div class="sound-slider-wrap">
+                    <input type="range" class="custom-range" id="vol-rain" min="0" max="100" value="50">
+                  </div>
+                  <button class="sound-toggle-btn" data-sound="rain" id="btn-sound-rain">Play</button>
+                </div>
+
+                <!-- Pink / White Noise -->
+                <div class="sound-row">
+                  <div class="sound-info">
+                    <div class="sound-icon">💨</div>
+                    <div class="sound-name">Pink Noise</div>
+                  </div>
+                  <div class="sound-slider-wrap">
+                    <input type="range" class="custom-range" id="vol-noise" min="0" max="100" value="30">
+                  </div>
+                  <button class="sound-toggle-btn" data-sound="noise" id="btn-sound-noise">Play</button>
+                </div>
+              </div>
+
+              <!-- Real-time Visualizer Canvas -->
+              <div class="visualizer-card glass-card" style="margin-top:16px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; font-size:11px; color:var(--text-muted);">
+                  <span>Real-Time Spectrum Visualizer</span>
+                  <span id="audio-state-badge">Engine Standby</span>
+                </div>
+                <canvas id="visualizer-canvas"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 4: MARKDOWN AI NOTE STUDIO ==================== -->
+        <section id="view-notes" class="view-section">
+          <div class="note-studio">
+            <!-- Editor Pane -->
+            <div class="glass-card editor-card">
+              <div class="editor-toolbar">
+                <div class="toolbar-group">
+                  <button class="tool-btn" data-action="bold" title="Bold">**B**</button>
+                  <button class="tool-btn" data-action="italic" title="Italic">*I*</button>
+                  <button class="tool-btn" data-action="heading" title="Heading">H#</button>
+                  <button class="tool-btn" data-action="code" title="Code">&lt;/&gt;</button>
+                  <button class="tool-btn" data-action="list" title="List">• List</button>
+                  <button class="tool-btn" data-action="quote" title="Quote">“ Quote</button>
+                </div>
+                <div class="toolbar-group">
+                  <select class="form-select" id="note-template-select" style="padding:4px 8px; font-size:11px;">
+                    <option value="">-- Load Template --</option>
+                    <option value="sprint">🚀 Sprint Planning</option>
+                    <option value="meeting">📝 Meeting Minutes</option>
+                    <option value="arch">🏛️ System Architecture</option>
+                    <option value="ideas">💡 Brainstorming Sandbox</option>
+                  </select>
+                  <button class="tool-btn" id="export-note-btn" title="Download Markdown (.md)">💾 Export</button>
+                </div>
+              </div>
+
+              <textarea class="markdown-textarea" id="note-input" spellcheck="false" placeholder="Write your notes in markdown here..."></textarea>
+
+              <div class="editor-footer">
+                <div>
+                  <span id="stat-words">0 words</span> • <span id="stat-chars">0 characters</span>
+                </div>
+                <div>
+                  <span id="stat-readtime">1 min read</span> • Auto-saved
+                </div>
+              </div>
+            </div>
+
+            <!-- Preview Pane -->
+            <div class="glass-card preview-card">
+              <div class="editor-toolbar">
+                <div style="font-size:13px; font-weight:700; color:var(--accent-primary); display:flex; align-items:center; gap:6px;">
+                  <span>✧ Live Render Preview</span>
+                </div>
+                <button class="tool-btn" id="copy-markdown-btn" title="Copy rendered text">📋 Copy</button>
+              </div>
+
+              <div class="markdown-preview" id="note-preview">
+                <!-- Rendered Markdown goes here -->
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Create Task Modal -->
+  <div class="modal-overlay" id="task-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Create New Task</h2>
+        <button class="modal-close-btn" id="close-task-modal-btn">&times;</button>
+      </div>
+
+      <form id="create-task-form">
+        <div class="form-group">
+          <label class="form-label" for="task-title-input">Task Title *</label>
+          <input type="text" class="form-input" id="task-title-input" required placeholder="e.g. Implement Neural Audio Synthesis Engine">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="task-desc-input">Description</label>
+          <textarea class="form-textarea" id="task-desc-input" placeholder="Brief outline of deliverables and milestones..."></textarea>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="form-label" for="task-column-select">Column Status</label>
+            <select class="form-select" id="task-column-select">
+              <option value="backlog">Backlog</option>
+              <option value="in-progress">In Progress</option>
+              <option value="review">In Review</option>
+              <option value="done">Completed</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="task-tag-select">Category Tag</label>
+            <select class="form-select" id="task-tag-select">
+              <option value="ai">AI / Core</option>
+              <option value="dev">Engineering</option>
+              <option value="design">Design & UI</option>
+              <option value="ops">DevOps & Cloud</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="form-label" for="task-priority-select">Priority Level</label>
+            <select class="form-select" id="task-priority-select">
+              <option value="High">🔴 High Priority</option>
+              <option value="Medium" selected>🟡 Medium Priority</option>
+              <option value="Low">🟢 Low Priority</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="task-due-input">Due Date</label>
+            <input type="date" class="form-input" id="task-due-input">
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="cancel-task-btn">Cancel</button>
+          <button type="submit" class="btn-primary">Create Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Command Palette Modal (Ctrl + K) -->
+  <div class="modal-overlay" id="cmd-modal">
+    <div class="modal-card cmd-modal-card">
+      <div class="cmd-input-wrap">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent-primary);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="cmd-input" id="cmd-search-input" placeholder="Type a command or search action...">
+      </div>
+
+      <div class="cmd-list" id="cmd-results-list">
+        <!-- Injected dynamically -->
+      </div>
+
+      <div class="cmd-footer">
+        <span>Use <kbd class="kbd-badge">↑</kbd> <kbd class="kbd-badge">↓</kbd> to navigate</span>
+        <span><kbd class="kbd-badge">Enter</kbd> to execute • <kbd class="kbd-badge">Esc</kbd> to close</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
