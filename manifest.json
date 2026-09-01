@@ -1,0 +1,17 @@
+﻿{
+  "name": "Lumina Studio — Next-Gen Productivity OS",
+  "short_name": "Lumina",
+  "description": "All-in-one cyber-luxe glassmorphic productivity and developer workspace with real-time telemetry, Kanban, Web Audio ambient synthesizer, and Markdown AI notes.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#090b10",
+  "theme_color": "#6366f1",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%236366f1'/><path d='M30 50 L45 65 L70 35' stroke='white' stroke-width='10' fill='none'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

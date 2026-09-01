@@ -1,10 +1,12 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Lumina Studio — Next-Gen Creative & Productivity Hub</title>
-  <meta name="description" content="A modern, high-performance workspace featuring real-time analytics, kanban task management, ambient sound generator, and markdown notes.">
+  <title>Lumina Studio â€” Next-Gen Productivity Operating System</title>
+  <meta name="description" content="All-in-one cyber-luxe glassmorphic productivity and developer workspace with real-time telemetry, Kanban, Web Audio ambient synthesizer, and Markdown AI notes.">
+  <meta name="theme-color" content="#6366f1">
+  <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="style.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='45' fill='%236366f1'/><path d='M30 50 L45 65 L70 35' stroke='white' stroke-width='10' fill='none'/></svg>">
 </head>
@@ -17,26 +19,42 @@
     <!-- Sidebar Navigation -->
     <aside class="app-sidebar">
       <div class="brand">
-        <div class="brand-icon">✧</div>
+        <div class="brand-icon">âœ§</div>
         <div>
           <div class="brand-title">Lumina</div>
+          <div style="font-size:10px; color:var(--text-muted); font-weight:600;">Productivity OS</div>
         </div>
-        <span class="brand-badge">PRO v2.5</span>
+        <span class="brand-badge">PRO v3.0</span>
       </div>
 
+      <div class="nav-section-label">WORKSPACE</div>
       <nav>
         <ul class="nav-menu">
           <li class="nav-item">
             <button class="nav-btn active" data-view="dashboard" id="nav-dashboard">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
-              <span>Dashboard</span>
+              <span>Command Center</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-btn" data-view="projects" id="nav-projects">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+              <span>Projects</span>
+              <span class="nav-count" id="sidebar-proj-count">0</span>
             </button>
           </li>
           <li class="nav-item">
             <button class="nav-btn" data-view="kanban" id="nav-kanban">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 6h16M4 12h16M4 18h7"/></svg>
               <span>Task Board</span>
-              <span class="nav-count" id="sidebar-task-count">12</span>
+              <span class="nav-count" id="sidebar-task-count">0</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-btn" data-view="notes" id="nav-notes">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <span>AI Notes</span>
+              <span class="nav-count" id="sidebar-notes-count">0</span>
             </button>
           </li>
           <li class="nav-item">
@@ -45,10 +63,26 @@
               <span>Focus Hub & Audio</span>
             </button>
           </li>
+        </ul>
+
+        <div class="nav-section-label" style="margin-top:16px;">INSIGHTS & SYSTEM</div>
+        <ul class="nav-menu">
           <li class="nav-item">
-            <button class="nav-btn" data-view="notes" id="nav-notes">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-              <span>AI Notes</span>
+            <button class="nav-btn" data-view="analytics" id="nav-analytics">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>
+              <span>Analytics</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-btn" data-view="activity" id="nav-activity">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              <span>Activity Timeline</span>
+            </button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-btn" data-view="settings" id="nav-settings">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <span>Settings</span>
             </button>
           </li>
         </ul>
@@ -58,8 +92,8 @@
         <div class="system-status">
           <span class="status-dot"></span>
           <div>
-            <div style="font-weight:600; font-size:12px;">Engine Active</div>
-            <div style="font-size:10px; color:var(--text-muted);">Real-time Sync • 60 FPS</div>
+            <div style="font-weight:600; font-size:12px;" id="sidebar-storage-label">IndexedDB Ready</div>
+            <div style="font-size:10px; color:var(--text-muted);" id="sidebar-sync-label">â— Local & Offline Ready</div>
           </div>
         </div>
       </div>
@@ -74,28 +108,50 @@
             <h1 id="page-heading">Command Center</h1>
             <p id="page-subheading">Live telemetry, focus analytics & active workflow</p>
           </div>
-          <button class="cmd-search-btn" id="cmd-palette-btn" title="Open Command Palette (Ctrl+K)">
+
+          <!-- Global Project Context Switcher -->
+          <div class="project-selector-dropdown-wrap">
+            <button class="project-selector-btn" id="global-project-selector-btn" title="Filter by Project (Ctrl+P)">
+              <span class="proj-color-dot" id="active-proj-dot" style="background:var(--accent-primary);"></span>
+              <span class="proj-active-name" id="active-proj-name">All Projects</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <div class="project-dropdown-menu" id="global-project-dropdown">
+              <div class="proj-dropdown-header">Active Project Filter</div>
+              <div class="proj-dropdown-list" id="global-project-list">
+                <!-- Injected via JS -->
+              </div>
+              <div class="proj-dropdown-footer">
+                <button class="proj-menu-action" id="btn-quick-new-project">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  <span>New Project</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <button class="cmd-search-btn" id="cmd-palette-btn" title="Universal Search & Command Palette (Ctrl+K)">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <span>Quick Command...</span>
+            <span>Search workspace...</span>
             <span class="kbd-badge">Ctrl K</span>
           </button>
         </div>
 
         <div class="header-right">
-          <div class="live-badge" id="live-indicator">
+          <div class="live-badge" id="live-indicator" title="Local-First Offline Engine Active">
             <span class="status-dot"></span>
-            <span>Live Feed</span>
+            <span id="live-indicator-text">â— Local</span>
           </div>
 
           <!-- Theme Switcher -->
           <div class="theme-picker" title="Switch Theme">
-            <button class="theme-btn active" data-theme-val="dark" title="Dark Obsidian">🌙</button>
-            <button class="theme-btn" data-theme-val="nebula" title="Nebula Purple">🔮</button>
-            <button class="theme-btn" data-theme-val="emerald" title="Cyber Emerald">🌿</button>
-            <button class="theme-btn" data-theme-val="light" title="Crisp Light">☀️</button>
+            <button class="theme-btn active" data-theme-val="dark" title="Dark Obsidian">ðŸŒ™</button>
+            <button class="theme-btn" data-theme-val="nebula" title="Nebula Purple">ðŸ”®</button>
+            <button class="theme-btn" data-theme-val="emerald" title="Cyber Emerald">ðŸŒ¿</button>
+            <button class="theme-btn" data-theme-val="light" title="Crisp Light">â˜€ï¸</button>
           </div>
 
-          <button class="btn-primary" id="header-create-task-btn">
+          <button class="btn-primary" id="header-create-task-btn" title="Create New Task (Ctrl+T)">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             <span>New Task</span>
           </button>
@@ -105,20 +161,20 @@
       <!-- Views Container -->
       <div class="view-container">
 
-        <!-- ==================== VIEW 1: DASHBOARD ==================== -->
+        <!-- ==================== VIEW 1: DASHBOARD / COMMAND CENTER ==================== -->
         <section id="view-dashboard" class="view-section active">
           <!-- Metric KPI Grid -->
           <div class="dashboard-grid">
             <div class="glass-card metric-card">
               <div class="metric-top">
                 <div class="metric-icon" style="background: rgba(99, 102, 241, 0.2); color: var(--accent-primary);">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                 </div>
-                <span class="metric-trend trend-up">↑ +18.4%</span>
+                <span class="metric-trend trend-up" id="kpi-completion-trend">100% Target</span>
               </div>
               <div>
-                <div class="metric-value" id="kpi-output">$42,850</div>
-                <div class="metric-label">Workspace Output Value</div>
+                <div class="metric-value" id="kpi-completion-rate">0%</div>
+                <div class="metric-label">Task Completion Rate</div>
               </div>
             </div>
 
@@ -127,10 +183,10 @@
                 <div class="metric-icon" style="background: rgba(6, 182, 212, 0.2); color: var(--accent-secondary);">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                 </div>
-                <span class="metric-trend trend-up">↑ +24.1%</span>
+                <span class="metric-trend trend-up" id="kpi-velocity-trend">Active Pace</span>
               </div>
               <div>
-                <div class="metric-value" id="kpi-velocity">98.6%</div>
+                <div class="metric-value" id="kpi-velocity">0 t/wk</div>
                 <div class="metric-label">Sprint Velocity Index</div>
               </div>
             </div>
@@ -140,24 +196,24 @@
                 <div class="metric-icon" style="background: rgba(236, 72, 153, 0.2); color: var(--accent-tertiary);">
                   <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 </div>
-                <span class="metric-trend trend-up">↑ 3.8 hrs</span>
+                <span class="metric-trend trend-up" id="kpi-sessions-trend">0 Sessions</span>
               </div>
               <div>
-                <div class="metric-value" id="kpi-focus">38.4h</div>
-                <div class="metric-label">Total Deep Focus Hours</div>
+                <div class="metric-value" id="kpi-focus">0.0h</div>
+                <div class="metric-label">Deep Focus Time</div>
               </div>
             </div>
 
             <div class="glass-card metric-card">
               <div class="metric-top">
                 <div class="metric-icon" style="background: rgba(16, 185, 129, 0.2); color: var(--accent-success);">
-                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                 </div>
-                <span class="metric-trend trend-up">↑ +12</span>
+                <span class="metric-trend trend-up" id="kpi-score-badge">Focus Score</span>
               </div>
               <div>
-                <div class="metric-value" id="kpi-tasks-done">47 / 52</div>
-                <div class="metric-label">Completed Milestones</div>
+                <div class="metric-value" id="kpi-focus-score">100</div>
+                <div class="metric-label">Productivity Quality Score</div>
               </div>
             </div>
           </div>
@@ -168,17 +224,21 @@
               <div class="section-header">
                 <div class="section-title">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
-                  <span>Activity & Velocity Telemetry</span>
+                  <span>Productivity & Velocity Telemetry</span>
                 </div>
                 <div class="chart-filters">
                   <button class="filter-chip active" data-range="7d">7 Days</button>
                   <button class="filter-chip" data-range="30d">30 Days</button>
                   <button class="filter-chip" data-range="90d">Quarter</button>
-                  <button class="filter-chip" id="toggle-sim-btn" title="Simulate dynamic real-time data">⚡ Live Pulse</button>
                 </div>
               </div>
-              <div class="chart-canvas-container">
+              <div class="chart-canvas-container" id="area-chart-container">
                 <canvas id="area-chart-canvas"></canvas>
+                <div class="chart-empty-overlay" id="area-chart-empty" style="display:none;">
+                  <div class="empty-icon">ðŸ“Š</div>
+                  <div class="empty-title">Telemetry Waiting for Data</div>
+                  <p class="empty-desc">Complete tasks or focus sessions to generate your authentic productivity curve.</p>
+                </div>
               </div>
             </div>
 
@@ -189,8 +249,13 @@
                   <span>Work Breakdown</span>
                 </div>
               </div>
-              <div class="chart-canvas-container">
+              <div class="chart-canvas-container" id="donut-chart-container">
                 <canvas id="donut-chart-canvas"></canvas>
+                <div class="chart-empty-overlay" id="donut-chart-empty" style="display:none;">
+                  <div class="empty-icon">ðŸŽ¯</div>
+                  <div class="empty-title">No Task Distribution Yet</div>
+                  <p class="empty-desc">Create tasks to see categorized distribution breakdown.</p>
+                </div>
               </div>
             </div>
           </div>
@@ -201,9 +266,9 @@
               <div class="section-header">
                 <div class="section-title">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                  <span>Recent System Events</span>
+                  <span>Recent Activity Feed</span>
                 </div>
-                <span style="font-size:12px; color:var(--text-muted);" id="activity-timestamp">Updated just now</span>
+                <button class="btn-text" id="btn-view-all-activity" style="font-size:12px;">View All â†’</button>
               </div>
               <div class="activity-list" id="activity-feed">
                 <!-- Injected via JS -->
@@ -214,40 +279,64 @@
               <div class="section-header">
                 <div class="section-title">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-                  <span>Quick Workflows</span>
+                  <span>Active Sprint Workflows</span>
                 </div>
               </div>
               <div class="quick-action-btns">
                 <button class="action-tile" data-action="goto-kanban">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>
-                  <span>Manage Tasks</span>
+                  <span>Task Board</span>
                 </button>
                 <button class="action-tile" data-action="start-focus">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  <span>Start 25m Timer</span>
+                  <span>Start 25m Focus</span>
                 </button>
                 <button class="action-tile" data-action="new-note">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
                   <span>Write Note</span>
                 </button>
-                <button class="action-tile" data-action="play-ambient">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
-                  <span>Cosmic Audio</span>
+                <button class="action-tile" data-action="goto-projects">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+                  <span>Manage Projects</span>
                 </button>
               </div>
             </div>
           </div>
         </section>
 
-        <!-- ==================== VIEW 2: KANBAN TASK BOARD ==================== -->
+        <!-- ==================== VIEW 2: PROJECTS MANAGEMENT ==================== -->
+        <section id="view-projects" class="view-section">
+          <div class="view-header-bar">
+            <div class="view-header-info">
+              <h2>Project Workspaces</h2>
+              <p>Organize, track deliverables, and manage deep focus sessions across your projects</p>
+            </div>
+            <div class="view-header-actions">
+              <div class="search-input-pill">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="projects-search-input" placeholder="Search projects...">
+              </div>
+              <button class="btn-primary" id="btn-create-project-modal">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <span>New Project</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="projects-grid" id="projects-card-grid">
+            <!-- Injected via JS -->
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 3: KANBAN TASK BOARD ==================== -->
         <section id="view-kanban" class="view-section">
           <div class="kanban-controls">
             <div class="kanban-search">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-              <input type="text" id="kanban-filter-input" placeholder="Search tasks, tags, or assignees...">
+              <input type="text" id="kanban-filter-input" placeholder="Search tasks, tags, or description...">
             </div>
 
-            <div style="display:flex; gap:8px;">
+            <div class="kanban-filters-wrap">
               <button class="filter-chip active" data-tag-filter="all">All Tags</button>
               <button class="filter-chip" data-tag-filter="ai">AI</button>
               <button class="filter-chip" data-tag-filter="design">Design</button>
@@ -312,8 +401,24 @@
           </div>
         </section>
 
-        <!-- ==================== VIEW 3: FOCUS & AMBIENT HUB ==================== -->
+        <!-- ==================== VIEW 4: FOCUS & AMBIENT HUB ==================== -->
         <section id="view-focus" class="view-section">
+          <!-- Active Task Binding Banner -->
+          <div class="focus-context-banner glass-card" id="focus-context-card">
+            <div class="focus-context-left">
+              <span class="focus-pulse-dot"></span>
+              <div>
+                <div style="font-size:11px; text-transform:uppercase; color:var(--text-muted); font-weight:700;">Focus Target Context</div>
+                <div class="focus-context-title" id="focus-bound-task-title">No Task Selected â€” General Workspace Session</div>
+                <div class="focus-context-project" id="focus-bound-project-title">Project: Lumina Studio</div>
+              </div>
+            </div>
+            <div class="focus-context-actions">
+              <button class="btn-secondary" id="focus-pick-task-btn" style="padding:6px 12px; font-size:12px;">Change Target</button>
+              <button class="btn-text" id="focus-clear-task-btn" style="font-size:12px; display:none;">Clear</button>
+            </div>
+          </div>
+
           <div class="focus-grid">
             <!-- Pomodoro Timer Card -->
             <div class="glass-card focus-card-main">
@@ -335,7 +440,7 @@
               </div>
 
               <div class="timer-controls">
-                <button class="btn-primary" id="timer-start-pause-btn" style="min-width: 120px; font-size:14px; padding: 10px 24px;">
+                <button class="btn-primary" id="timer-start-pause-btn" style="min-width: 130px; font-size:14px; padding: 10px 24px;">
                   <svg id="timer-btn-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
                   <span id="timer-btn-label">Start Focus</span>
                 </button>
@@ -345,8 +450,8 @@
                 </button>
               </div>
 
-              <p style="font-size:12px; color:var(--text-muted); max-width:320px;">
-                Audio chimes and ambient visualizer automatically sync with your focus state.
+              <p style="font-size:12px; color:var(--text-muted); max-width:340px;">
+                Press <kbd class="kbd-badge">Space</kbd> to toggle timer. Focus minutes are automatically credited to your active task and project.
               </p>
             </div>
 
@@ -361,11 +466,10 @@
               </div>
 
               <div class="soundscape-controls">
-
                 <!-- Cosmic Drone -->
                 <div class="sound-row">
                   <div class="sound-info">
-                    <div class="sound-icon">🌌</div>
+                    <div class="sound-icon">ðŸŒŒ</div>
                     <div class="sound-name">Cosmic Drone</div>
                   </div>
                   <div class="sound-slider-wrap">
@@ -377,7 +481,7 @@
                 <!-- Binaural Focus 432Hz -->
                 <div class="sound-row">
                   <div class="sound-info">
-                    <div class="sound-icon">🧠</div>
+                    <div class="sound-icon">ðŸ§ </div>
                     <div class="sound-name">Binaural 432Hz</div>
                   </div>
                   <div class="sound-slider-wrap">
@@ -389,7 +493,7 @@
                 <!-- Rain / Water -->
                 <div class="sound-row">
                   <div class="sound-info">
-                    <div class="sound-icon">🌧️</div>
+                    <div class="sound-icon">ðŸŒ§ï¸</div>
                     <div class="sound-name">Gentle Rain</div>
                   </div>
                   <div class="sound-slider-wrap">
@@ -401,7 +505,7 @@
                 <!-- Pink / White Noise -->
                 <div class="sound-row">
                   <div class="sound-info">
-                    <div class="sound-icon">💨</div>
+                    <div class="sound-icon">ðŸ’¨</div>
                     <div class="sound-name">Pink Noise</div>
                   </div>
                   <div class="sound-slider-wrap">
@@ -423,55 +527,338 @@
           </div>
         </section>
 
-        <!-- ==================== VIEW 4: MARKDOWN AI NOTE STUDIO ==================== -->
+        <!-- ==================== VIEW 5: MARKDOWN AI NOTE STUDIO ==================== -->
         <section id="view-notes" class="view-section">
-          <div class="note-studio">
-            <!-- Editor Pane -->
-            <div class="glass-card editor-card">
-              <div class="editor-toolbar">
-                <div class="toolbar-group">
-                  <button class="tool-btn" data-action="bold" title="Bold">**B**</button>
-                  <button class="tool-btn" data-action="italic" title="Italic">*I*</button>
-                  <button class="tool-btn" data-action="heading" title="Heading">H#</button>
-                  <button class="tool-btn" data-action="code" title="Code">&lt;/&gt;</button>
-                  <button class="tool-btn" data-action="list" title="List">• List</button>
-                  <button class="tool-btn" data-action="quote" title="Quote">“ Quote</button>
+          <div class="notes-layout">
+            <!-- Notes Drawer / List -->
+            <div class="glass-card notes-sidebar-card">
+              <div class="notes-sidebar-header">
+                <div style="font-weight:700; font-size:13px; display:flex; align-items:center; gap:6px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+                  <span>Notes</span>
                 </div>
-                <div class="toolbar-group">
-                  <select class="form-select" id="note-template-select" style="padding:4px 8px; font-size:11px;">
-                    <option value="">-- Load Template --</option>
-                    <option value="sprint">🚀 Sprint Planning</option>
-                    <option value="meeting">📝 Meeting Minutes</option>
-                    <option value="arch">🏛️ System Architecture</option>
-                    <option value="ideas">💡 Brainstorming Sandbox</option>
-                  </select>
-                  <button class="tool-btn" id="export-note-btn" title="Download Markdown (.md)">💾 Export</button>
-                </div>
+                <button class="btn-primary" id="btn-new-note" style="padding:4px 10px; font-size:11px;">+ New</button>
               </div>
-
-              <textarea class="markdown-textarea" id="note-input" spellcheck="false" placeholder="Write your notes in markdown here..."></textarea>
-
-              <div class="editor-footer">
-                <div>
-                  <span id="stat-words">0 words</span> • <span id="stat-chars">0 characters</span>
-                </div>
-                <div>
-                  <span id="stat-readtime">1 min read</span> • Auto-saved
-                </div>
+              <div class="notes-list" id="notes-sidebar-list">
+                <!-- Injected via JS -->
               </div>
             </div>
 
-            <!-- Preview Pane -->
-            <div class="glass-card preview-card">
-              <div class="editor-toolbar">
-                <div style="font-size:13px; font-weight:700; color:var(--accent-primary); display:flex; align-items:center; gap:6px;">
-                  <span>✧ Live Render Preview</span>
+            <!-- Note Editor & Preview Studio -->
+            <div class="note-studio">
+              <!-- Editor Pane -->
+              <div class="glass-card editor-card">
+                <div class="editor-toolbar">
+                  <div class="toolbar-group">
+                    <button class="tool-btn" data-action="bold" title="Bold">**B**</button>
+                    <button class="tool-btn" data-action="italic" title="Italic">*I*</button>
+                    <button class="tool-btn" data-action="heading" title="Heading">H#</button>
+                    <button class="tool-btn" data-action="code" title="Code">&lt;/&gt;</button>
+                    <button class="tool-btn" data-action="list" title="Bullet List">â€¢ List</button>
+                    <button class="tool-btn" data-action="checklist" title="Task Checklist">- [ ] Task</button>
+                    <button class="tool-btn" data-action="quote" title="Quote">â€œ Quote</button>
+                  </div>
+                  <div class="toolbar-group">
+                    <select class="form-select" id="note-template-select" style="padding:4px 8px; font-size:11px;">
+                      <option value="">-- Load Template --</option>
+                      <option value="sprint">ðŸš€ Sprint Planning</option>
+                      <option value="meeting">ðŸ“ Meeting Minutes</option>
+                      <option value="arch">ðŸ›ï¸ System Architecture</option>
+                      <option value="ideas">ðŸ’¡ Brainstorming Sandbox</option>
+                    </select>
+                    <button class="tool-btn" id="btn-convert-all-checklist" title="Convert all checklist items in note to Kanban tasks">âš¡ Tasks</button>
+                    <button class="tool-btn" id="export-note-btn" title="Download Markdown (.md)">ðŸ’¾ Export</button>
+                  </div>
                 </div>
-                <button class="tool-btn" id="copy-markdown-btn" title="Copy rendered text">📋 Copy</button>
+
+                <div class="note-title-bar">
+                  <input type="text" class="note-title-input" id="note-title-input" placeholder="Untitled Note">
+                  <select class="form-select" id="note-project-select" style="padding:2px 8px; font-size:11px; max-width:140px;">
+                    <!-- Injected via JS -->
+                  </select>
+                </div>
+
+                <textarea class="markdown-textarea" id="note-input" spellcheck="false" placeholder="Write your markdown note here... Use `- [ ] checklist items` to easily convert into Kanban tasks."></textarea>
+
+                <div class="editor-footer">
+                  <div>
+                    <span id="stat-words">0 words</span> â€¢ <span id="stat-chars">0 characters</span>
+                  </div>
+                  <div>
+                    <span id="stat-readtime">1 min read</span> â€¢ <span style="color:var(--accent-success);">â— Saved to IndexedDB</span>
+                  </div>
+                </div>
               </div>
 
-              <div class="markdown-preview" id="note-preview">
-                <!-- Rendered Markdown goes here -->
+              <!-- Preview Pane -->
+              <div class="glass-card preview-card">
+                <div class="editor-toolbar">
+                  <div style="font-size:13px; font-weight:700; color:var(--accent-primary); display:flex; align-items:center; gap:6px;">
+                    <span>âœ§ Live Render Preview</span>
+                  </div>
+                  <button class="tool-btn" id="copy-markdown-btn" title="Copy rendered text">ðŸ“‹ Copy</button>
+                </div>
+
+                <div class="markdown-preview" id="note-preview">
+                  <!-- Rendered Markdown goes here -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 6: ANALYTICS ==================== -->
+        <section id="view-analytics" class="view-section">
+          <div class="view-header-bar">
+            <div class="view-header-info">
+              <h2>Productivity Analytics & Velocity</h2>
+              <p>Authentic telemetry derived from your completed tasks, focus sessions, and active projects</p>
+            </div>
+            <div class="chart-filters">
+              <button class="filter-chip active" data-analytics-range="7d">Last 7 Days</button>
+              <button class="filter-chip" data-analytics-range="30d">Last 30 Days</button>
+              <button class="filter-chip" data-analytics-range="90d">Last 90 Days</button>
+            </div>
+          </div>
+
+          <div class="analytics-metrics-grid">
+            <div class="glass-card analytics-stat-card">
+              <div class="stat-label">Total Focused Minutes</div>
+              <div class="stat-value" id="analytics-total-mins">0m</div>
+              <div class="stat-sub" id="analytics-total-sessions">0 completed sessions</div>
+            </div>
+            <div class="glass-card analytics-stat-card">
+              <div class="stat-label">Tasks Completed</div>
+              <div class="stat-value" id="analytics-completed-tasks">0</div>
+              <div class="stat-sub" id="analytics-completion-ratio">0% overall rate</div>
+            </div>
+            <div class="glass-card analytics-stat-card">
+              <div class="stat-label">Velocity Throughput</div>
+              <div class="stat-value" id="analytics-velocity-val">0</div>
+              <div class="stat-sub">tasks per cycle</div>
+            </div>
+            <div class="glass-card analytics-stat-card">
+              <div class="stat-label">Focus Score</div>
+              <div class="stat-value" id="analytics-focus-score">100</div>
+              <div class="stat-sub">Consistency & output</div>
+            </div>
+          </div>
+
+          <div class="charts-grid" style="margin-top:20px;">
+            <div class="glass-card chart-card" style="height:360px;">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                  <span>Focus Hours & Velocity Trajectory</span>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="analytics-area-canvas"></canvas>
+              </div>
+            </div>
+
+            <div class="glass-card chart-card" style="height:360px;">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10h-10z"/></svg>
+                  <span>Project Task Distribution</span>
+                </div>
+              </div>
+              <div class="chart-canvas-container">
+                <canvas id="analytics-donut-canvas"></canvas>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 7: ACTIVITY TIMELINE ==================== -->
+        <section id="view-activity" class="view-section">
+          <div class="view-header-bar">
+            <div class="view-header-info">
+              <h2>System Activity Timeline</h2>
+              <p>Chronological audit log of milestones, focus intervals, notes, and workspace events</p>
+            </div>
+            <div class="activity-filters-bar">
+              <select class="form-select" id="activity-type-filter" style="padding:6px 12px; font-size:12px;">
+                <option value="all">All Event Types</option>
+                <option value="task">Tasks</option>
+                <option value="focus">Focus Sessions</option>
+                <option value="note">Notes</option>
+                <option value="project">Projects</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="timeline-container" id="full-activity-timeline">
+            <!-- Injected via JS -->
+          </div>
+        </section>
+
+        <!-- ==================== VIEW 8: SETTINGS ==================== -->
+        <section id="view-settings" class="view-section">
+          <div class="view-header-bar">
+            <div class="view-header-info">
+              <h2>Workspace Settings & Preferences</h2>
+              <p>Configure themes, timer intervals, data backup, and keyboard shortcuts</p>
+            </div>
+          </div>
+
+          <div class="settings-grid">
+            <!-- Appearance Card -->
+            <div class="glass-card settings-card">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                  <span>Appearance & Motion</span>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Color Theme</label>
+                <div class="theme-selection-grid">
+                  <button class="theme-choice-btn active" data-theme-choice="dark">
+                    <span class="choice-icon">ðŸŒ™</span>
+                    <span>Dark Obsidian</span>
+                  </button>
+                  <button class="theme-choice-btn" data-theme-choice="nebula">
+                    <span class="choice-icon">ðŸ”®</span>
+                    <span>Nebula Purple</span>
+                  </button>
+                  <button class="theme-choice-btn" data-theme-choice="emerald">
+                    <span class="choice-icon">ðŸŒ¿</span>
+                    <span>Cyber Emerald</span>
+                  </button>
+                  <button class="theme-choice-btn" data-theme-choice="light">
+                    <span class="choice-icon">â˜€ï¸</span>
+                    <span>Crisp Light</span>
+                  </button>
+                </div>
+              </div>
+              <div class="form-group" style="margin-top:16px;">
+                <label class="switch-label">
+                  <input type="checkbox" id="settings-reduced-motion">
+                  <span class="switch-slider"></span>
+                  <span style="font-size:13px; font-weight:600;">Enable Reduced Motion</span>
+                </label>
+                <p style="font-size:11px; color:var(--text-muted); margin-top:4px;">Disables intensive canvas particle movements and transitions.</p>
+              </div>
+            </div>
+
+            <!-- Focus Defaults Card -->
+            <div class="glass-card settings-card">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg>
+                  <span>Focus Timer Defaults</span>
+                </div>
+              </div>
+              <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+                <div class="form-group">
+                  <label class="form-label" for="setting-focus-duration">Focus (mins)</label>
+                  <input type="number" class="form-input" id="setting-focus-duration" min="5" max="120" value="25">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="setting-short-break">Short Break (mins)</label>
+                  <input type="number" class="form-input" id="setting-short-break" min="1" max="30" value="5">
+                </div>
+                <div class="form-group">
+                  <label class="form-label" for="setting-long-break">Long Break (mins)</label>
+                  <input type="number" class="form-input" id="setting-long-break" min="5" max="60" value="15">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="setting-default-soundscape">Default Soundscape</label>
+                <select class="form-select" id="setting-default-soundscape">
+                  <option value="none">None (Silence)</option>
+                  <option value="drone" selected>ðŸŒŒ Cosmic Drone</option>
+                  <option value="binaural">ðŸ§  Binaural 432Hz</option>
+                  <option value="rain">ðŸŒ§ï¸ Gentle Rain</option>
+                  <option value="noise">ðŸ’¨ Pink Noise</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Storage & Diagnostics -->
+            <div class="glass-card settings-card">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                  <span>Storage & Diagnostics</span>
+                </div>
+              </div>
+              <div class="storage-stats-grid">
+                <div class="storage-stat-pill">
+                  <div class="stat-num" id="stat-count-projects">0</div>
+                  <div class="stat-label">Projects</div>
+                </div>
+                <div class="storage-stat-pill">
+                  <div class="stat-num" id="stat-count-tasks">0</div>
+                  <div class="stat-label">Tasks</div>
+                </div>
+                <div class="storage-stat-pill">
+                  <div class="stat-num" id="stat-count-notes">0</div>
+                  <div class="stat-label">Notes</div>
+                </div>
+                <div class="storage-stat-pill">
+                  <div class="stat-num" id="stat-count-sessions">0</div>
+                  <div class="stat-label">Sessions</div>
+                </div>
+                <div class="storage-stat-pill">
+                  <div class="stat-num" id="stat-count-activities">0</div>
+                  <div class="stat-label">Activities</div>
+                </div>
+              </div>
+              <p style="font-size:12px; color:var(--text-secondary); margin-top:14px;">
+                Storage Driver: <strong style="color:var(--accent-success);">IndexedDB (Local-First)</strong>. All data is securely isolated on your machine with zero external trackers.
+              </p>
+            </div>
+
+            <!-- Data Management & Backups -->
+            <div class="glass-card settings-card">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Data Backup & Management</span>
+                </div>
+              </div>
+              <div class="settings-actions-row">
+                <button class="btn-primary" id="btn-export-workspace">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  <span>Export Workspace JSON</span>
+                </button>
+                <button class="btn-secondary" id="btn-import-workspace">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  <span>Import Workspace</span>
+                </button>
+                <button class="btn-secondary" id="btn-export-all-notes">
+                  <span>Export All Notes (.md)</span>
+                </button>
+                <button class="btn-danger" id="btn-reset-workspace">
+                  <span>Reset Workspace</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Keyboard Shortcuts Reference -->
+            <div class="glass-card settings-card" style="grid-column: 1 / -1;">
+              <div class="section-header">
+                <div class="section-title">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="8" x2="6" y2="8"/><line x1="10" y1="8" x2="10" y2="8"/><line x1="14" y1="8" x2="14" y2="8"/><line x1="18" y1="8" x2="18" y2="8"/><line x1="6" y1="12" x2="18" y2="12"/></svg>
+                  <span>Keyboard Navigation Cheat Sheet</span>
+                </div>
+              </div>
+              <div class="shortcuts-table-grid">
+                <div class="shortcut-item"><kbd class="kbd-badge">Ctrl + K</kbd><span>Universal Command & Search Palette</span></div>
+                <div class="shortcut-item"><kbd class="kbd-badge">Ctrl + P</kbd><span>Quick Project Switcher</span></div>
+                <div class="shortcut-item"><kbd class="kbd-badge">Ctrl + T</kbd><span>Create New Task</span></div>
+                <div class="shortcut-item"><kbd class="kbd-badge">Ctrl + N</kbd><span>Create New Markdown Note</span></div>
+                <div class="shortcut-item"><kbd class="kbd-badge">Space</kbd><span>Start / Pause Timer (Focus Hub)</span></div>
+                <div class="shortcut-item"><kbd class="kbd-badge">Escape</kbd><span>Close Modals / Palettes</span></div>
+                <div class="shortcut-item"><kbd class="kbd-badge">G then D</kbd><span>Go to Command Center</span></div>
+                <div class="shortcut-item"><kbd class="kbd-badge">G then P</kbd><span>Go to Projects</span></div>
+                <div class="shortcut-item"><kbd class="kbd-badge">G then K</kbd><span>Go to Task Board</span></div>
+                <div class="shortcut-item"><kbd class="kbd-badge">G then N</kbd><span>Go to AI Notes</span></div>
+                <div class="shortcut-item"><kbd class="kbd-badge">G then F</kbd><span>Go to Focus Hub</span></div>
+                <div class="shortcut-item"><kbd class="kbd-badge">G then A</kbd><span>Go to Analytics</span></div>
               </div>
             </div>
           </div>
@@ -483,15 +870,18 @@
 
   <!-- ==================== MODALS ==================== -->
 
-  <!-- Create Task Modal -->
+  <!-- Create / Edit Task Modal -->
   <div class="modal-overlay" id="task-modal">
     <div class="modal-card">
       <div class="modal-header">
-        <h2>Create New Task</h2>
+        <h2 id="task-modal-title">Create New Task</h2>
         <button class="modal-close-btn" id="close-task-modal-btn">&times;</button>
       </div>
 
       <form id="create-task-form">
+        <input type="hidden" id="task-edit-id" value="">
+        <input type="hidden" id="task-source-note-id" value="">
+
         <div class="form-group">
           <label class="form-label" for="task-title-input">Task Title *</label>
           <input type="text" class="form-input" id="task-title-input" required placeholder="e.g. Implement Neural Audio Synthesis Engine">
@@ -504,6 +894,13 @@
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
           <div class="form-group">
+            <label class="form-label" for="task-project-select">Assign to Project</label>
+            <select class="form-select" id="task-project-select">
+              <!-- Injected via JS -->
+            </select>
+          </div>
+
+          <div class="form-group">
             <label class="form-label" for="task-column-select">Column Status</label>
             <select class="form-select" id="task-column-select">
               <option value="backlog">Backlog</option>
@@ -512,7 +909,9 @@
               <option value="done">Completed</option>
             </select>
           </div>
+        </div>
 
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
           <div class="form-group">
             <label class="form-label" for="task-tag-select">Category Tag</label>
             <select class="form-select" id="task-tag-select">
@@ -522,16 +921,21 @@
               <option value="ops">DevOps & Cloud</option>
             </select>
           </div>
+
+          <div class="form-group">
+            <label class="form-label" for="task-priority-select">Priority Level</label>
+            <select class="form-select" id="task-priority-select">
+              <option value="High">ðŸ”´ High Priority</option>
+              <option value="Medium" selected>ðŸŸ¡ Medium Priority</option>
+              <option value="Low">ðŸŸ¢ Low Priority</option>
+            </select>
+          </div>
         </div>
 
         <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
           <div class="form-group">
-            <label class="form-label" for="task-priority-select">Priority Level</label>
-            <select class="form-select" id="task-priority-select">
-              <option value="High">🔴 High Priority</option>
-              <option value="Medium" selected>🟡 Medium Priority</option>
-              <option value="Low">🟢 Low Priority</option>
-            </select>
+            <label class="form-label" for="task-estimated-mins">Estimated Time (mins)</label>
+            <input type="number" class="form-input" id="task-estimated-mins" min="0" step="15" value="60" placeholder="e.g. 60">
           </div>
 
           <div class="form-group">
@@ -542,18 +946,128 @@
 
         <div class="modal-actions">
           <button type="button" class="btn-secondary" id="cancel-task-btn">Cancel</button>
-          <button type="submit" class="btn-primary">Create Task</button>
+          <button type="submit" class="btn-primary" id="save-task-btn">Save Task</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- Command Palette Modal (Ctrl + K) -->
+  <!-- Task Detail & Productivity View Modal -->
+  <div class="modal-overlay" id="task-detail-modal">
+    <div class="modal-card task-detail-card">
+      <div class="modal-header">
+        <div class="card-tags" id="detail-task-tags"></div>
+        <button class="modal-close-btn" id="close-detail-modal-btn">&times;</button>
+      </div>
+
+      <div class="task-detail-body">
+        <h2 class="task-detail-title" id="detail-task-title">Task Title</h2>
+        <p class="task-detail-desc" id="detail-task-desc">Description</p>
+
+        <div class="detail-meta-grid">
+          <div class="detail-meta-item">
+            <span class="meta-label">Project</span>
+            <span class="meta-val" id="detail-task-project">Lumina Studio</span>
+          </div>
+          <div class="detail-meta-item">
+            <span class="meta-label">Status</span>
+            <span class="meta-val" id="detail-task-status">In Progress</span>
+          </div>
+          <div class="detail-meta-item">
+            <span class="meta-label">Focused Time</span>
+            <span class="meta-val" id="detail-task-focused-time" style="color:var(--accent-primary); font-weight:700;">0 mins</span>
+          </div>
+          <div class="detail-meta-item">
+            <span class="meta-label">Estimated</span>
+            <span class="meta-val" id="detail-task-estimated">60 mins</span>
+          </div>
+          <div class="detail-meta-item">
+            <span class="meta-label">Created</span>
+            <span class="meta-val" id="detail-task-created">Today</span>
+          </div>
+          <div class="detail-meta-item">
+            <span class="meta-label">Due Date</span>
+            <span class="meta-val" id="detail-task-due">Upcoming</span>
+          </div>
+        </div>
+
+        <div id="detail-source-note-box" class="source-note-badge-box" style="display:none;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/></svg>
+          <span>Originates from Markdown Note checklist</span>
+          <button class="btn-text" id="detail-open-source-note-btn">Open Note â†’</button>
+        </div>
+      </div>
+
+      <div class="modal-actions" style="margin-top:20px;">
+        <button type="button" class="btn-secondary" id="detail-delete-task-btn" style="color:var(--accent-danger); margin-right:auto;">Delete</button>
+        <button type="button" class="btn-secondary" id="detail-edit-task-btn">Edit</button>
+        <button type="button" class="btn-primary" id="detail-start-focus-btn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span>Start Focus</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create / Edit Project Modal -->
+  <div class="modal-overlay" id="project-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 id="project-modal-title">Create New Project</h2>
+        <button class="modal-close-btn" id="close-project-modal-btn">&times;</button>
+      </div>
+
+      <form id="project-form">
+        <input type="hidden" id="project-edit-id" value="">
+
+        <div class="form-group">
+          <label class="form-label" for="project-name-input">Project Name *</label>
+          <input type="text" class="form-input" id="project-name-input" required placeholder="e.g. Lumina Studio Core">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="project-desc-input">Description</label>
+          <textarea class="form-textarea" id="project-desc-input" placeholder="Primary objective, tech stack & milestones..."></textarea>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-group">
+            <label class="form-label">Theme Accent Color</label>
+            <div class="color-picker-palette">
+              <label class="color-radio"><input type="radio" name="proj-color" value="#6366f1" checked><span style="background:#6366f1;"></span></label>
+              <label class="color-radio"><input type="radio" name="proj-color" value="#06b6d4"><span style="background:#06b6d4;"></span></label>
+              <label class="color-radio"><input type="radio" name="proj-color" value="#ec4899"><span style="background:#ec4899;"></span></label>
+              <label class="color-radio"><input type="radio" name="proj-color" value="#10b981"><span style="background:#10b981;"></span></label>
+              <label class="color-radio"><input type="radio" name="proj-color" value="#f59e0b"><span style="background:#f59e0b;"></span></label>
+              <label class="color-radio"><input type="radio" name="proj-color" value="#a855f7"><span style="background:#a855f7;"></span></label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="project-status-select">Status</label>
+            <select class="form-select" id="project-status-select">
+              <option value="Active" selected>Active</option>
+              <option value="Paused">Paused</option>
+              <option value="Archived">Archived</option>
+              <option value="Completed">Completed</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" id="cancel-project-btn">Cancel</button>
+          <button type="submit" class="btn-primary">Save Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Universal Command Palette Modal (Ctrl + K) -->
   <div class="modal-overlay" id="cmd-modal">
     <div class="modal-card cmd-modal-card">
       <div class="cmd-input-wrap">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--accent-primary);"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-        <input type="text" class="cmd-input" id="cmd-search-input" placeholder="Type a command or search action...">
+        <input type="text" class="cmd-input" id="cmd-search-input" placeholder="Search tasks, projects, notes, or run commands (e.g. 'task:auth', 'note:arch')...">
       </div>
 
       <div class="cmd-list" id="cmd-results-list">
@@ -561,8 +1075,42 @@
       </div>
 
       <div class="cmd-footer">
-        <span>Use <kbd class="kbd-badge">↑</kbd> <kbd class="kbd-badge">↓</kbd> to navigate</span>
-        <span><kbd class="kbd-badge">Enter</kbd> to execute • <kbd class="kbd-badge">Esc</kbd> to close</span>
+        <span>Use <kbd class="kbd-badge">â†‘</kbd> <kbd class="kbd-badge">â†“</kbd> to navigate</span>
+        <span><kbd class="kbd-badge">Enter</kbd> to select â€¢ <kbd class="kbd-badge">Esc</kbd> to close</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Import Workspace Modal -->
+  <div class="modal-overlay" id="import-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Import Workspace Data</h2>
+        <button class="modal-close-btn" id="close-import-modal-btn">&times;</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Select Lumina Backup JSON file</label>
+        <input type="file" id="import-file-input" accept=".json" class="form-input">
+      </div>
+      <div id="import-validation-preview" style="display:none; font-size:12px; padding:12px; background:var(--bg-tertiary); border-radius:var(--radius-md); margin-bottom:16px;"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="cancel-import-btn">Cancel</button>
+        <button type="button" class="btn-primary" id="confirm-import-btn" disabled>Import & Restore</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generic Confirmation Modal -->
+  <div class="modal-overlay" id="confirm-modal">
+    <div class="modal-card" style="max-width:440px;">
+      <div class="modal-header">
+        <h2 id="confirm-modal-title">Confirm Action</h2>
+        <button class="modal-close-btn" id="close-confirm-modal-btn">&times;</button>
+      </div>
+      <p id="confirm-modal-message" style="font-size:13px; color:var(--text-secondary); margin-bottom:20px;">Are you sure you want to proceed?</p>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="confirm-cancel-btn">Cancel</button>
+        <button type="button" class="btn-danger" id="confirm-proceed-btn">Proceed</button>
       </div>
     </div>
   </div>
