@@ -1,4 +1,4 @@
-﻿# âœ§ Lumina Studio â€” Next-Gen Productivity Operating System
+# âœ§ Lumina Studio â€” Next-Gen Productivity Operating System
 
 > **All-in-One Local-First Productivity & Developer Workspace** â€” Real-time telemetry, Agile Kanban boards, first-class project portfolios, Web Audio procedural ambient synthesizer, and Markdown AI notes with interactive checklist-to-task synchronization.
 
@@ -8,38 +8,38 @@
 
 Lumina Studio is engineered as a modern, high-performance, client-side productivity OS built entirely with **Vanilla JavaScript (ES6+)**, **HTML5**, **CSS3**, **Canvas API**, **Web Audio API**, and **IndexedDB**. It has **zero external frameworks, zero npm dependencies, and zero trackers**.
 
-```
-                     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-                     â”‚          Lumina Glassmorphic UI              â”‚
-                     â”‚  (Command Center, Projects, Kanban, Focus,   â”‚
-                     â”‚    Notes, Analytics, Activity, Settings)     â”‚
-                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                            â”‚
-                                            â–¼
-                     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-                     â”‚          Lumina State Manager                â”‚
-                     â”‚ (Reactive Single Source of Truth & Cache)   â”‚
-                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                            â”‚
-                                            â–¼
-                     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-                     â”‚          Lumina Event Bus (Pub/Sub)          â”‚
-                     â”‚ (task:*, note:*, focus:*, project:*, etc.)   â”‚
-                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                            â”‚
-                                            â–¼
-                     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-                     â”‚          Repository Data Layer               â”‚
-                     â”‚  (ProjectRepo, TaskRepo, NoteRepo,           â”‚
-                     â”‚   FocusSessionRepo, ActivityRepo, Settings)  â”‚
-                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-                                            â”‚
-                                            â–¼
-                     â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”
-                     â”‚          IndexedDB Persistence               â”‚
-                     â”‚   (LuminaDB v1 + LocalStorage Migration)     â”‚
-                     â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”˜
-```
+`
+                     +----------------------------------------------+
+                     |          Lumina Glassmorphic UI              |
+                     |  (Command Center, Projects, Kanban, Focus,   |
+                     |    Notes, Analytics, Activity, Settings)     |
+                     +----------------------+-----------------------+
+                                            |
+                                            v
+                     +----------------------------------------------+
+                     |          Lumina State Manager                |
+                     | (Reactive Single Source of Truth & Cache)    |
+                     +----------------------+-----------------------+
+                                            |
+                                            v
+                     +----------------------------------------------+
+                     |          Lumina Event Bus (Pub/Sub)          |
+                     | (task:*, note:*, focus:*, project:*, etc.)   |
+                     +----------------------+-----------------------+
+                                            |
+                                            v
+                     +----------------------------------------------+
+                     |          Repository Data Layer               |
+                     |  (ProjectRepo, TaskRepo, NoteRepo,           |
+                     |   FocusSessionRepo, ActivityRepo, Settings)  |
+                     +----------------------+-----------------------+
+                                            |
+                                            v
+                     +----------------------------------------------+
+                     |          IndexedDB Persistence               |
+                     |   (LuminaDB v1 + LocalStorage Migration)     |
+                     +----------------------------------------------+
+`
 
 ---
 
@@ -47,7 +47,7 @@ Lumina Studio is engineered as a modern, high-performance, client-side productiv
 
 ### 1. ðŸ“Š Command Center & Authentic Telemetry
 - **Authentic Telemetry**: Replaces random numbers with real mathematical calculations derived from actual user activity:
-  - **Task Completion Rate**: `(completedTasks / totalTasks) * 100`.
+  - **Task Completion Rate**: (completedTasks / totalTasks) * 100.
   - **Sprint Velocity**: Throughput of completed deliverables per weekly cycle.
   - **Deep Focus Hours**: Sum of all logged focus session minutes.
   - **Productivity Quality Score (0-100)**: Weighted score based on completed sessions, task throughput, and consistency.
@@ -55,8 +55,8 @@ Lumina Studio is engineered as a modern, high-performance, client-side productiv
 - **Work Breakdown Donut Chart**: Real-time categorized distribution of work across AI, Engineering, Design, and DevOps.
 
 ### 2. ðŸ“ Project Portfolio Management
-- **First-Class Project Entities**: Name, description, custom theme accent color, status (`Active`, `Paused`, `Archived`, `Completed`).
-- **Global Project Context Selector**: Header dropdown (`All Projects â–¾`, `Lumina Studio Core`, `Cloud Edge Platform`, `AI Neural Research`) dynamically filters Kanban, Notes, Focus Hub, Analytics, and Activity timeline across the entire application.
+- **First-Class Project Entities**: Name, description, custom theme accent color, status (Active, Paused, Archived, Completed).
+- **Global Project Context Selector**: Header dropdown (All Projects â–¾, Lumina Studio Core, Cloud Edge Platform, AI Neural Research) dynamically filters Kanban, Notes, Focus Hub, Analytics, and Activity timeline across the entire application.
 - **Project Dashboard**: Real-time progress bars, completed milestones count, total focused hours, focus sessions count, linked notes count, and instant action shortcuts.
 
 ### 3. ðŸ“‹ Agile Kanban Task Board
@@ -66,16 +66,16 @@ Lumina Studio is engineered as a modern, high-performance, client-side productiv
   - Assign tasks to projects, set estimated duration, priority level, category tags, and due dates.
   - **Task Detail View**: Displays focused time, estimated time, project context, and origin note relationship.
   - **Start Focus**: One-click jump from any task card directly into Focus Hub with task and project pre-bound.
-  - **Completed Timestamp**: Automatic `completedAt` logging, project progress updates, and activity timeline event emission.
+  - **Completed Timestamp**: Automatic completedAt logging, project progress updates, and activity timeline event emission.
 
 ### 4. âœï¸ Markdown AI Note Studio & Checklist Sync
 - **Multi-Note Management**: Notes drawer to create, switch, and delete notes linked to projects.
 - **Live AST Markdown Parser**: Renders headers, code blocks, blockquotes, bold/italic, lists, and checklists.
 - **Checklist-to-Task Conversion**:
-  - Automatically identifies `- [ ] Item` in markdown and renders an interactive **`âž• Task`** button directly in the live preview.
-  - **Convert All Checklist Items (`âš¡ Tasks`)**: One-click converts all unchecked checklist items into tracked Kanban tasks linked to the note (`sourceNoteId`).
+  - Automatically identifies - [ ] Item in markdown and renders an interactive **âž• Task** button directly in the live preview.
+  - **Convert All Checklist Items (âš¡ Tasks)**: One-click converts all unchecked checklist items into tracked Kanban tasks linked to the note (sourceNoteId).
   - **Open Source Note**: Jump directly from any task back to its originating note.
-- **Note Metrics & Export**: Real-time word count, character count, estimated reading time, and one-click `.md` file download.
+- **Note Metrics & Export**: Real-time word count, character count, estimated reading time, and one-click .md file download.
 
 ### 5. â±ï¸ Focus Hub & Web Audio Ambient Synthesizer
 - **Task & Project Binding Banner**: Displays currently focused project and task.
@@ -93,14 +93,15 @@ Lumina Studio is engineered as a modern, high-performance, client-side productiv
 - Filterable by project and event type (*Tasks*, *Focus Sessions*, *Notes*, *Projects*).
 - Formatted timestamps, icons, descriptions, and quick action links.
 
-### 7. âŒ¨ï¸ Universal Command Palette (`Ctrl + K`) & Global Search
+### 7. âŒ¨ï¸ Universal Command Palette (Ctrl + K) & Global Search
 - Instant keyboard-driven global action and search menu with fuzzy filtering across projects, tasks, notes, activities, and system commands.
-- Prefix filters: `task:auth`, `project:lumina`, `note:arch`.
-- Full keyboard navigation (`â†‘`, `â†“`, `Enter`, `Esc`).
+- Prefix filters: 	ask:auth, project:lumina, 
+ote:arch.
+- Full keyboard navigation (â†‘, â†“, Enter, Esc).
 
 ### 8. âš™ï¸ Settings & Data Management
 - **Themes**: 4 cyber-luxe themes (**Dark Obsidian ðŸŒ™**, **Nebula Purple ðŸ”®**, **Cyber Emerald ðŸŒ¿**, **Crisp Light â˜€ï¸**).
-- **Reduced Motion**: Respects `@media (prefers-reduced-motion: reduce)` with dedicated toggle.
+- **Reduced Motion**: Respects @media (prefers-reduced-motion: reduce) with dedicated toggle.
 - **Data Management**:
   - ðŸ’¾ **Export Workspace JSON**: Complete backup of projects, tasks, notes, focus sessions, activities, and settings.
   - ðŸ“¥ **Import Workspace**: Validated JSON restore with conflict resolution.
@@ -109,9 +110,9 @@ Lumina Studio is engineered as a modern, high-performance, client-side productiv
 - **Diagnostics**: Real-time storage statistics of records stored in IndexedDB.
 
 ### 9. ðŸ“± Progressive Web App (PWA) & Offline Ready
-- Includes `manifest.json` and cache-first `service-worker.js`.
+- Includes manifest.json and cache-first service-worker.js.
 - Installable on desktop and mobile devices.
-- 100% offline-ready with local status badge (`â— Local / Offline Ready`).
+- 100% offline-ready with local status badge (â— Local / Offline Ready).
 
 ---
 
@@ -137,7 +138,7 @@ Lumina Studio is engineered as a modern, high-performance, client-side productiv
 
 ## ðŸ“‚ Project Structure
 
-```
+`
 Lumina/
 â”œâ”€â”€ index.html        # Single Page Application layout, navigation & modals
 â”œâ”€â”€ style.css         # Cyber-luxe glassmorphic design system & responsive layout
@@ -145,7 +146,7 @@ Lumina/
 â”œâ”€â”€ manifest.json     # Progressive Web App (PWA) manifest
 â”œâ”€â”€ service-worker.js # Cache-first service worker for 100% offline operation
 â””â”€â”€ README.md         # Documentation & architecture guide
-```
+`
 
 ---
 
@@ -154,15 +155,15 @@ Lumina/
 Lumina Studio runs completely client-side in any modern web browser with zero build steps or npm installations.
 
 ### Option 1: Direct File Launch
-Double click `index.html` in your file manager or open `file:///.../index.html` in Chrome, Edge, Safari, or Firefox.
+Double click index.html in your file manager or open ile:///.../index.html in Chrome, Edge, Safari, or Firefox.
 
 ### Option 2: Live Local Server
-```bash
+`ash
 # Start a local HTTP server
 python -m http.server 3000
 # or: npx serve .
-```
-Visit `http://localhost:3000` in your browser.
+`
+Visit http://localhost:3000 in your browser.
 
 ---
 
