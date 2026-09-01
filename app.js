@@ -884,17 +884,26 @@
     }
   }
 
-  // ==========================================================================
-  // 6. WEB AUDIO AMBIENT SYNTHESIZER & VISUALIZER
+    // ==========================================================================
+  // 6. WEB AUDIO AMBIENT SYNTHESIZER & VISUALIZER (FAIL-SAFE & ZERO-LEAK)
   // ==========================================================================
 
   function getAudioContext() {
     if (!state.audio.ctx) {
       const AudioCtx = window.AudioContext || window.webkitAudioContext;
       state.audio.ctx = new AudioCtx();
+
+      // Master Output Gain Node before destination
+      state.audio.masterOutputGain = state.audio.ctx.createGain();
+      state.audio.masterOutputGain.gain.setValueAtTime(1.0, state.audio.ctx.currentTime);
+
       state.audio.analyser = state.audio.ctx.createAnalyser();
       state.audio.analyser.fftSize = 64;
-      state.audio.analyser.connect(state.audio.ctx.destination);
+
+      // Routing: Sound Gain -> Analyser -> Master Gain -> Destination
+      state.audio.analyser.connect(state.audio.masterOutputGain);
+      state.audio.masterOutputGain.connect(state.audio.ctx.destination);
+
       initVisualizerLoop();
     }
     if (state.audio.ctx.state === 'suspended') {
@@ -903,24 +912,30 @@
     return state.audio.ctx;
   }
 
+  const soundTypes = ['balochi', 'drone', 'binaural', 'rain', 'noise'];
+
   function initAudioEngine() {
-    // Sound Toggles
-    const soundTypes = ['balochi', 'drone', 'binaural', 'rain', 'noise'];
+    // Sound Toggles & Volume Sliders
     soundTypes.forEach(type => {
       const btn = document.getElementById(`btn-sound-${type}`);
       const volSlider = document.getElementById(`vol-${type}`);
 
       if (btn) {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
           getAudioContext();
-          if (state.audio.isPlaying[type]) {
+
+          if (state.audio.isPlaying[type] || state.audio.nodes[type]) {
             stopSound(type);
             btn.classList.remove('active');
             btn.textContent = 'Play';
+            showToast(`${formatSoundName(type)} stopped`);
           } else {
             playSound(type);
             btn.classList.add('active');
             btn.textContent = 'Playing';
+            showToast(`Playing ${formatSoundName(type)}`);
           }
         });
       }
@@ -930,40 +945,82 @@
           const val = parseFloat(e.target.value) / 100;
           state.audio.volumes[type] = val;
           if (state.audio.nodes[type] && state.audio.nodes[type].gain) {
-            state.audio.nodes[type].gain.gain.setValueAtTime(val, state.audio.ctx.currentTime);
+            try {
+              state.audio.nodes[type].gain.gain.setValueAtTime(val, state.audio.ctx.currentTime);
+            } catch (err) {}
           }
         });
       }
     });
 
+    // Mute All Button
     const muteAllBtn = document.getElementById('stop-all-audio-btn');
     if (muteAllBtn) {
-      muteAllBtn.addEventListener('click', () => {
-        soundTypes.forEach(t => stopSound(t));
-        document.querySelectorAll('.sound-toggle-btn').forEach(b => {
-          b.classList.remove('active');
-          b.textContent = 'Play';
-        });
-        showToast('All ambient sounds muted');
+      muteAllBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        stopAllSounds();
       });
     }
+  }
+
+  function formatSoundName(type) {
+    const names = {
+      balochi: 'Balochi Suroz & Drone',
+      drone: 'Cosmic Drone',
+      binaural: 'Binaural 432Hz',
+      rain: 'Gentle Rain',
+      noise: 'Pink Noise'
+    };
+    return names[type] || type;
+  }
+
+  function stopAllSounds() {
+    // Forcibly stop every sound type
+    soundTypes.forEach(t => stopSound(t));
+
+    // Forcibly clean any leftover nodes
+    if (state.audio.nodes) {
+      Object.keys(state.audio.nodes).forEach(key => {
+        stopSound(key);
+      });
+      state.audio.nodes = {};
+    }
+
+    // Reset all flags
+    soundTypes.forEach(t => {
+      state.audio.isPlaying[t] = false;
+    });
+
+    // Update all UI buttons
+    document.querySelectorAll('.sound-toggle-btn').forEach(b => {
+      b.classList.remove('active');
+      b.textContent = 'Play';
+    });
+
+    const badge = document.getElementById('audio-state-badge');
+    if (badge) {
+      badge.textContent = 'Engine Standby';
+      badge.style.color = 'var(--text-muted)';
+    }
+
+    showToast('All audio stopped & muted');
   }
 
   function playSound(type) {
     const ctx = getAudioContext();
     const now = ctx.currentTime;
+
+    // If already playing or node exists, kill it cleanly first to prevent overlapping sounds
+    if (state.audio.nodes[type]) {
+      stopSound(type);
+    }
+
     const masterGain = ctx.createGain();
-    masterGain.gain.setValueAtTime(state.audio.volumes[type], now);
+    masterGain.gain.setValueAtTime(state.audio.volumes[type] !== undefined ? state.audio.volumes[type] : 0.5, now);
     masterGain.connect(state.audio.analyser);
 
-    
     if (type === 'balochi') {
-      // =========================================================================
-      // BALOCHI SUROZ & DAMBURAG FOLK SYNTHESIZER
-      // Simulates traditional Balochi Suroz bowed harmonics + Damburag rhythmic drone
-      // =========================================================================
-      
-      // 1. Damburag (Two-stringed long-neck lute) Drone: Root D3 (146.83Hz) + Fifth A3 (220Hz)
+      // 1. Damburag Pluck & Drone
       const damburagGain = ctx.createGain();
       damburagGain.gain.setValueAtTime(0.65, now);
       damburagGain.connect(masterGain);
@@ -987,8 +1044,7 @@
       droneRoot.start(now);
       droneFifth.start(now);
 
-      // 2. Suroz (سروز - Bowed folk fiddle with sympathetic resonator strings)
-      // Generates warm expressive modal melody in D Bayati / Rast folk scale
+      // 2. Suroz Bowed Fiddle
       const surozGain = ctx.createGain();
       surozGain.gain.setValueAtTime(0.7, now);
       surozGain.connect(masterGain);
@@ -996,21 +1052,18 @@
       const surozOsc = ctx.createOscillator();
       surozOsc.type = 'sawtooth';
 
-      // Sympathetic resonance oscillator (octave + fifth overtone)
       const sympatheticOsc = ctx.createOscillator();
       sympatheticOsc.type = 'sine';
 
-      // Suroz acoustic vibrato LFO (5.2 Hz gentle expressive vibrato)
       const vibratoLfo = ctx.createOscillator();
       const vibratoGain = ctx.createGain();
       vibratoLfo.frequency.setValueAtTime(5.2, now);
-      vibratoGain.gain.setValueAtTime(3.5, now); // subtle pitch depth
+      vibratoGain.gain.setValueAtTime(3.5, now);
       vibratoLfo.connect(vibratoGain);
       vibratoGain.connect(surozOsc.frequency);
       vibratoGain.connect(sympatheticOsc.frequency);
       vibratoLfo.start(now);
 
-      // Resonant Bow filter (Acoustic body wood resonance)
       const bodyFilter = ctx.createBiquadFilter();
       bodyFilter.type = 'bandpass';
       bodyFilter.frequency.setValueAtTime(650, now);
@@ -1020,38 +1073,35 @@
       sympatheticOsc.connect(bodyFilter);
       bodyFilter.connect(surozGain);
 
-      // Balochi Modal Melody Scale (D Bayati / Zahirok folk mode: D4, E4-half-flat, F4, G4, A4, Bb4, C5, D5)
       const balochiScale = [293.66, 320.00, 349.23, 392.00, 440.00, 466.16, 523.25, 587.33];
       surozOsc.frequency.setValueAtTime(balochiScale[0], now);
       sympatheticOsc.frequency.setValueAtTime(balochiScale[0] * 2, now);
       surozOsc.start(now);
       sympatheticOsc.start(now);
 
-      // 3. Generative Melodic Glissando & Damburag Strum Timer
       let noteIdx = 0;
       const melodySequence = [0, 2, 3, 4, 3, 2, 1, 0, 4, 5, 4, 3, 2, 0, 1, 0];
-      
+
       const balochiInterval = setInterval(() => {
-        if (!state.audio.isPlaying.balochi) {
+        if (!state.audio.isPlaying.balochi || !state.audio.nodes.balochi) {
           clearInterval(balochiInterval);
           return;
         }
-        const t = ctx.currentTime;
-        noteIdx = (noteIdx + 1) % melodySequence.length;
-        const targetFreq = balochiScale[melodySequence[noteIdx]];
+        try {
+          const t = ctx.currentTime;
+          noteIdx = (noteIdx + 1) % melodySequence.length;
+          const targetFreq = balochiScale[melodySequence[noteIdx]];
 
-        // Glissando / Portamento between Balochi modal notes (authentic bowed slide)
-        surozOsc.frequency.cancelScheduledValues(t);
-        sympatheticOsc.frequency.cancelScheduledValues(t);
-        surozOsc.frequency.setTargetAtTime(targetFreq, t, 0.18);
-        sympatheticOsc.frequency.setTargetAtTime(targetFreq * 2, t, 0.18);
+          surozOsc.frequency.cancelScheduledValues(t);
+          sympatheticOsc.frequency.cancelScheduledValues(t);
+          surozOsc.frequency.setTargetAtTime(targetFreq, t, 0.18);
+          sympatheticOsc.frequency.setTargetAtTime(targetFreq * 2, t, 0.18);
 
-        // Body filter sweep for dynamic bowing expression
-        bodyFilter.frequency.setTargetAtTime(450 + (targetFreq * 0.7), t, 0.15);
+          bodyFilter.frequency.setTargetAtTime(450 + (targetFreq * 0.7), t, 0.15);
 
-        // Damburag rhythmic pluck pulse simulation
-        damburagGain.gain.setValueAtTime(0.75, t);
-        damburagGain.gain.exponentialRampToValueAtTime(0.4, t + 0.35);
+          damburagGain.gain.setValueAtTime(0.75, t);
+          damburagGain.gain.exponentialRampToValueAtTime(0.4, t + 0.35);
+        } catch (err) {}
       }, 1400);
 
       state.audio.nodes.balochi = {
@@ -1060,12 +1110,14 @@
         surozOsc,
         sympatheticOsc,
         vibratoLfo,
+        droneFilter,
+        bodyFilter,
+        damburagGain,
+        surozGain,
         balochiInterval,
         gain: masterGain
       };
     } else if (type === 'drone') {
-
-      // Cosmic Drone: Tri-oscillator chord (110Hz, 165Hz, 220Hz) with low-pass sweep
       const freqs = [110, 164.81, 220];
       const oscs = freqs.map(f => {
         const osc = ctx.createOscillator();
@@ -1086,7 +1138,6 @@
 
       state.audio.nodes.drone = { oscs, filter, gain: masterGain };
     } else if (type === 'binaural') {
-      // Binaural 432Hz alpha beat (432Hz left, 440Hz right = 8Hz alpha wave)
       const oscL = ctx.createOscillator();
       const oscR = ctx.createOscillator();
       oscL.type = 'sine';
@@ -1101,7 +1152,6 @@
 
       state.audio.nodes.binaural = { oscL, oscR, gain: masterGain };
     } else if (type === 'rain' || type === 'noise') {
-      // White / Pink Noise Buffer synthesis
       const bufferSize = ctx.sampleRate * 2;
       const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const data = buffer.getChannelData(0);
@@ -1110,13 +1160,11 @@
       for (let i = 0; i < bufferSize; i++) {
         const white = Math.random() * 2 - 1;
         if (type === 'noise') {
-          // Pink noise filter approximation
           b0 = 0.99886 * b0 + white * 0.0555179;
           b1 = 0.99332 * b1 + white * 0.0750759;
           b2 = 0.96900 * b2 + white * 0.1538520;
           data[i] = (b0 + b1 + b2 + white * 0.5362) * 0.11;
         } else {
-          // Rain noise
           data[i] = white * 0.2;
         }
       }
@@ -1137,28 +1185,86 @@
     }
 
     state.audio.isPlaying[type] = true;
-    document.getElementById('audio-state-badge').textContent = 'Audio Synthesizer Active';
-    document.getElementById('audio-state-badge').style.color = 'var(--accent-success)';
+
+    // Update UI button state
+    const btn = document.getElementById(`btn-sound-${type}`);
+    if (btn) {
+      btn.classList.add('active');
+      btn.textContent = 'Playing';
+    }
+
+    const badge = document.getElementById('audio-state-badge');
+    if (badge) {
+      badge.textContent = 'Audio Synthesizer Active';
+      badge.style.color = 'var(--accent-success)';
+    }
   }
 
   function stopSound(type) {
-    if (!state.audio.isPlaying[type]) return;
-    const node = state.audio.nodes[type];
-    if (node) {
-      if (node.balochiInterval) clearInterval(node.balochiInterval);
-      if (node.droneRoot) { try { node.droneRoot.stop(); node.droneFifth.stop(); node.surozOsc.stop(); node.sympatheticOsc.stop(); node.vibratoLfo.stop(); } catch(e){} }
-      if (node.oscs) node.oscs.forEach(o => { try { o.stop(); } catch(e){} });
-      if (node.oscL) { try { node.oscL.stop(); node.oscR.stop(); } catch(e){} }
-      if (node.noiseSource) { try { node.noiseSource.stop(); } catch(e){} }
-      if (node.gain) node.gain.disconnect();
-    }
-    state.audio.isPlaying[type] = false;
-    delete state.audio.nodes[type];
+    const node = state.audio.nodes ? state.audio.nodes[type] : null;
 
+    if (node) {
+      // 1. Immediately mute gain to 0
+      if (node.gain && node.gain.gain) {
+        try {
+          node.gain.gain.setValueAtTime(0, state.audio.ctx.currentTime);
+          node.gain.disconnect();
+        } catch (e) {}
+      }
+
+      // 2. Clear any intervals
+      if (node.balochiInterval) {
+        try { clearInterval(node.balochiInterval); } catch (e) {}
+      }
+
+      // 3. Stop and disconnect every oscillator and audio source individually
+      const sources = [
+        node.droneRoot,
+        node.droneFifth,
+        node.surozOsc,
+        node.sympatheticOsc,
+        node.vibratoLfo,
+        node.oscL,
+        node.oscR,
+        node.noiseSource,
+        ...(node.oscs || [])
+      ];
+
+      sources.forEach(src => {
+        if (src) {
+          try { src.stop(); } catch (e) {}
+          try { src.disconnect(); } catch (e) {}
+        }
+      });
+
+      // 4. Disconnect all sub-filters and sub-gains
+      const subNodes = [node.droneFilter, node.bodyFilter, node.filter, node.damburagGain, node.surozGain];
+      subNodes.forEach(sn => {
+        if (sn) {
+          try { sn.disconnect(); } catch (e) {}
+        }
+      });
+
+      delete state.audio.nodes[type];
+    }
+
+    state.audio.isPlaying[type] = false;
+
+    // Update specific button
+    const btn = document.getElementById(`btn-sound-${type}`);
+    if (btn) {
+      btn.classList.remove('active');
+      btn.textContent = 'Play';
+    }
+
+    // Check if any sound is still playing
     const anyPlaying = Object.values(state.audio.isPlaying).some(v => v);
     if (!anyPlaying) {
-      document.getElementById('audio-state-badge').textContent = 'Engine Standby';
-      document.getElementById('audio-state-badge').style.color = 'var(--text-muted)';
+      const badge = document.getElementById('audio-state-badge');
+      if (badge) {
+        badge.textContent = 'Engine Standby';
+        badge.style.color = 'var(--text-muted)';
+      }
     }
   }
 
