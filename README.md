@@ -18,7 +18,6 @@
 - **⏱️ Focus Hub & Web Audio Synthesizer**:
   - Pomodoro timer with SVG radial countdown ring and audio chimes.
   - Self-contained multi-node Web Audio API ambient sound generator:
-    - 🪕 **Balochi Suroz & Damburag Ambient (سروز)**: Traditional modal drone and generative bowed glissando in D Bayati / Zahirok folk scale.
     - 🌌 **Cosmic Drone** (Multi-oscillator chord synthesis)
     - 🧠 **Binaural 432Hz** (Alpha wave 8Hz focus beat)
     - 🌧️ **Gentle Rain** (Filtered white noise synthesis)

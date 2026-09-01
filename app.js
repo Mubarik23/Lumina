@@ -25,16 +25,14 @@
         drone: false,
         binaural: false,
         rain: false,
-        noise: false,
-        balochi: false
+        noise: false
       },
       nodes: {},
       volumes: {
         drone: 0.4,
         binaural: 0.35,
         rain: 0.5,
-        noise: 0.3,
-        balochi: 0.55
+        noise: 0.3
       }
     },
     liveSimulation: false,
@@ -912,7 +910,7 @@
     return state.audio.ctx;
   }
 
-  const soundTypes = ['balochi', 'drone', 'binaural', 'rain', 'noise'];
+  const soundTypes = ['drone', 'binaural', 'rain', 'noise'];
 
   function initAudioEngine() {
     // Sound Toggles & Volume Sliders
@@ -965,7 +963,6 @@
 
   function formatSoundName(type) {
     const names = {
-      balochi: 'Balochi Suroz & Drone',
       drone: 'Cosmic Drone',
       binaural: 'Binaural 432Hz',
       rain: 'Gentle Rain',
@@ -1019,105 +1016,7 @@
     masterGain.gain.setValueAtTime(state.audio.volumes[type] !== undefined ? state.audio.volumes[type] : 0.5, now);
     masterGain.connect(state.audio.analyser);
 
-    if (type === 'balochi') {
-      // 1. Damburag Pluck & Drone
-      const damburagGain = ctx.createGain();
-      damburagGain.gain.setValueAtTime(0.65, now);
-      damburagGain.connect(masterGain);
-
-      const droneRoot = ctx.createOscillator();
-      droneRoot.type = 'triangle';
-      droneRoot.frequency.setValueAtTime(146.83, now); // D3
-
-      const droneFifth = ctx.createOscillator();
-      droneFifth.type = 'sawtooth';
-      droneFifth.frequency.setValueAtTime(220.00, now); // A3
-
-      const droneFilter = ctx.createBiquadFilter();
-      droneFilter.type = 'lowpass';
-      droneFilter.frequency.setValueAtTime(480, now);
-      droneFilter.Q.setValueAtTime(2.5, now);
-
-      droneRoot.connect(droneFilter);
-      droneFifth.connect(droneFilter);
-      droneFilter.connect(damburagGain);
-      droneRoot.start(now);
-      droneFifth.start(now);
-
-      // 2. Suroz Bowed Fiddle
-      const surozGain = ctx.createGain();
-      surozGain.gain.setValueAtTime(0.7, now);
-      surozGain.connect(masterGain);
-
-      const surozOsc = ctx.createOscillator();
-      surozOsc.type = 'sawtooth';
-
-      const sympatheticOsc = ctx.createOscillator();
-      sympatheticOsc.type = 'sine';
-
-      const vibratoLfo = ctx.createOscillator();
-      const vibratoGain = ctx.createGain();
-      vibratoLfo.frequency.setValueAtTime(5.2, now);
-      vibratoGain.gain.setValueAtTime(3.5, now);
-      vibratoLfo.connect(vibratoGain);
-      vibratoGain.connect(surozOsc.frequency);
-      vibratoGain.connect(sympatheticOsc.frequency);
-      vibratoLfo.start(now);
-
-      const bodyFilter = ctx.createBiquadFilter();
-      bodyFilter.type = 'bandpass';
-      bodyFilter.frequency.setValueAtTime(650, now);
-      bodyFilter.Q.setValueAtTime(1.8, now);
-
-      surozOsc.connect(bodyFilter);
-      sympatheticOsc.connect(bodyFilter);
-      bodyFilter.connect(surozGain);
-
-      const balochiScale = [293.66, 320.00, 349.23, 392.00, 440.00, 466.16, 523.25, 587.33];
-      surozOsc.frequency.setValueAtTime(balochiScale[0], now);
-      sympatheticOsc.frequency.setValueAtTime(balochiScale[0] * 2, now);
-      surozOsc.start(now);
-      sympatheticOsc.start(now);
-
-      let noteIdx = 0;
-      const melodySequence = [0, 2, 3, 4, 3, 2, 1, 0, 4, 5, 4, 3, 2, 0, 1, 0];
-
-      const balochiInterval = setInterval(() => {
-        if (!state.audio.isPlaying.balochi || !state.audio.nodes.balochi) {
-          clearInterval(balochiInterval);
-          return;
-        }
-        try {
-          const t = ctx.currentTime;
-          noteIdx = (noteIdx + 1) % melodySequence.length;
-          const targetFreq = balochiScale[melodySequence[noteIdx]];
-
-          surozOsc.frequency.cancelScheduledValues(t);
-          sympatheticOsc.frequency.cancelScheduledValues(t);
-          surozOsc.frequency.setTargetAtTime(targetFreq, t, 0.18);
-          sympatheticOsc.frequency.setTargetAtTime(targetFreq * 2, t, 0.18);
-
-          bodyFilter.frequency.setTargetAtTime(450 + (targetFreq * 0.7), t, 0.15);
-
-          damburagGain.gain.setValueAtTime(0.75, t);
-          damburagGain.gain.exponentialRampToValueAtTime(0.4, t + 0.35);
-        } catch (err) {}
-      }, 1400);
-
-      state.audio.nodes.balochi = {
-        droneRoot,
-        droneFifth,
-        surozOsc,
-        sympatheticOsc,
-        vibratoLfo,
-        droneFilter,
-        bodyFilter,
-        damburagGain,
-        surozGain,
-        balochiInterval,
-        gain: masterGain
-      };
-    } else if (type === 'drone') {
+    if (type === 'drone') {
       const freqs = [110, 164.81, 220];
       const oscs = freqs.map(f => {
         const osc = ctx.createOscillator();
@@ -1219,11 +1118,6 @@
 
       // 3. Stop and disconnect every oscillator and audio source individually
       const sources = [
-        node.droneRoot,
-        node.droneFifth,
-        node.surozOsc,
-        node.sympatheticOsc,
-        node.vibratoLfo,
         node.oscL,
         node.oscR,
         node.noiseSource,
@@ -1238,7 +1132,7 @@
       });
 
       // 4. Disconnect all sub-filters and sub-gains
-      const subNodes = [node.droneFilter, node.bodyFilter, node.filter, node.damburagGain, node.surozGain];
+      const subNodes = [node.filter];
       subNodes.forEach(sn => {
         if (sn) {
           try { sn.disconnect(); } catch (e) {}
